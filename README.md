@@ -1,79 +1,78 @@
-# toolsig (Instagram Tools)
-* Instagram (also called IG or Insta) is a photo and video sharing application that allows users to take photos, take videos, apply digital filters and share them to various social networking services, including Instagram's own.
-* Instagram Tools Based on NodeJS (This script or code was created by ccocot - Aldi Nugraha).
+# Tool-TR (Instagram Tool-TR)
+* Instagram (IG veya Insta olarak da adlandırılır), kullanıcıların fotoğraf çekmesine, video çekmesine, dijital filtreler uygulamasına ve bunları Instagram'ın kendisi de dahil olmak üzere çeşitli sosyal ağ hizmetlerinde paylaşmasına olanak tanıyan bir fotoğraf ve video paylaşım uygulamasıdır.
+* NodeJS Tabanlı Instagram Tool-TR (Bu komut dosyası veya kod, ccocot - Aldi Nugraha tarafından oluşturulmuştur).
 
-[![Build](https://img.shields.io/badge/Codename_-_toolsig_v4.0-brightgreen.svg)]()
-[![License](http://img.shields.io/:license-MIT-brightgreen.svg?style=flat)](LICENSE)
+[!yapım(https://img.shields.io/badge/Codename_-_toolsig_v4.0-brightgreen.svg)]()
+[![Lisans](http://img.shields.io/:license-MIT-brightgreen.svg?style=flat)](LICENSE)
 
-## Table of Contents
-$ [Default or Basic Usage](#Default-or-Basic-Usage)
-$ [Information Tools](#INFORMATION-TOOLS)
-$ [Warning](#WARNING)
-$ [License](#LICENSE)
-$ [Other Information](#OTHER-INFORMATION)
+## İçindekiler
+$ [Varsayılan Temel Kulanım](#Varsayılan veya Temel Kullanım)
+$ [Bilgi Araçları](#BİLGİ-ARAÇLARI)
+$ [Uyarı](#UYARI)
+$ [Lisans](#LİSANS)
+$ [Diğer Bilgiler](#DİĞER-BİLGİLER)
 
-## Video Tutorial (WINDOWS, C9/CA & TERMUX) [https://youtu.be/J7WbsfZ7z6I]
-
-## Default or Basic Usage
-	$ git clone https://github.com/officialputuid/toolsig.git
-	$ cd toolsig
+## Varsayılan veya Temel Kullanım
+	$ git clone https://github.com/numan6363/Tool-TR.git
+	$ cd Tool-TR
 	$ npm i
 	$ node index.js
 	
-## Tutorial on PC/LAPTOP [OS]
-	# Download & Install Git for Windows (32/64bit)
-	# Download & Install NodeJs for Windows (Recommend Use NodeJS LTS (32/64bit))
-	# Download File toolsig (https://s.id/2yGC6) & Extract the file
-	# Right Click (Mouse/Touchpad) In "toolsig-master" Folder & Choose Git Bash Here!
+## PC/DİZÜSTÜ BİLGİSAYAR [OS] İÇİN
+	# Windows için Git'i İndirin ve Yükleyin (32/64bit)
+	# Windows için NodeJ'leri İndirin ve Yükleyin
+ (NodeJS LTS'yi Kullanmanızı Öneririm (32/64bit))
+	# Tool-TR dosyasını indirin (https://s.id/2yGC6) & Extract the file
+	# Tool-TR" Klasöründe Sağ Tıklayın (Fare/Dokunmatik Yüzey) ve Buradan Git Bash'i seçin!
 	$ npm i
 	$ node index.js
 
-## Tutorial on Termux [ANDROID]
+## Termux ve mobil [ANDROID] İçin
 	$ pkg upgrade && pkg update
 	$ pkg install git
 	$ pkg install nodejs-lts
-	$ git clone https://github.com/officialputuid/toolsig.git
-	$ cd toolsig
+	$ git clone https://github.com/numan6363/Tool-TR.git
+	$ cd Tool-TR
 	$ npm i
 	$ node index.js
 
-## Tutorial on C9io/CodeAnywhere [WEB-CLOUD-BASED]
+## C9io/CodeAnywhere ile ilgili eğitim [WEB-BULUT TABANLI]
 	$ Login c9.io/login | https://codeanywhere.com/login
-	$ Select & Install Workspace + Package NodeJS
-	$ git clone https://github.com/officialputuid/toolsig.git
-	$ cd toolsig
+	$ Çalışma Alanı + Paket NodeJS'yi Seç ve Yükle
+	$ git clone https://github.com/numan6363/Tool-TR.git
+	$ cd Tool-TR
 	$ npm i
 	$ node index.js
 
-## INFORMATION TOOLS
-	➥ Bot Like Timeline
-	➥ Bot Like Target User
-	➥ Mass Delete Post/Photo
-	➥ F-L -> Followers Target [NEW]
-	➥ L-C -> Followers Target [NEW]
-	➥ F-L-C -> Followers Target
-	➥ F-L-C -> Followers Target [BETA]
-	➥ F-L-C -> Followers Target v2
-	➥ F-L-DM -> Followers Target
-	➥ F-L-DM -> Followers Target [BETA]
-	➥ F-L-C -> Hashtag Target
-	➥ F-L-C -> Location Target
-	➥ Unfollow All Following
-	➥ Unfollow Not Followback
+## Bilgilendirme
+	➥ Bot beğeni zamanı çizelgesi
+	➥ Bot beğeni hedef kullanıcı
+	➥ Gönderiyi/Fotoğrafı Toplu silme
+	➥ F-L -> Takipçi hedefi [YENİ]
+	➥ L-C -> Takipçi hedefi [YENİ]
+	➥ F-L-C -> Takipçi hedefi
+	➥ F-L-C -> Takipçi hedefi[BETA]
+	➥ F-L-C -> Takipçi hedefi v2
+	➥ F-L-DM -> Takipçi hedefi [DM]
+	➥ F-L-DM -> Takipçi hedefi [DM],[BETA]
+	➥ F-L-C -> Hashtag hedefi
+	➥ F-L-C -> Konum hedefi
+	➥ Tüm takipçileri takipten bırak
+	➥ Geri takip yapmayanları takipten çıkarmak
 	
-	🛈 F-L = Follow & Like
-	🛈 F-L-C = Follow, Like & Comment
-	🛈 F-L-DM = Follow, Like & Direct Message
+	🛈 F-L = Takip et & Like
+	🛈 F-L-C = Takip et, Beğen & Yorum
+	🛈 F-L-DM = Takip et, Beğen & Direkt Mesaj [DM]
 
-## WARNING
-	⚠ Use tools at your own risk
-	⚠ Use this Tool for personal use, not for sale
-	⚠ I am not responsible for your account using this tool
-	⚠ Make sure your account has been verified (Email & Telp)
+## UYARI
+	⚠ Araçları kendi sorumluluğunuzda kullanın
+	⚠ Bu Aracı satılık değil, kişisel kullanım için kullanın
+	⚠ Bu aracı kullanarak hesabınızdan sorumlu değilim
+	⚠Hesabınızın doğrulandığından emin olun (E-posta ve Telefon)
 
-## OTHER INFORMATION
+## DİĞER BİLGİLER
 	☆ https://github.com/dilame/instagram-private-api
-	☆ Thank you for the help of all members SGB TEAM REBORN (https://www.sgb.or.id/)
+	☆ Tüm üyelerin yardımları için teşekkür ederiz SGB TEAM REBORN (https://www.sgb.or.id/)
 
-## LICENSE
-	☑ This project is licensed under MIT License. https://opensource.org/licenses/MIT
+## LİSANS
+	☑Bu proje MIT Lisansı ile lisanslanmıştır. https://opensource.org/licenses/MIT
