@@ -2,7 +2,7 @@
 * Instagram (IG veya Insta olarak da adlandırılır), kullanıcıların fotoğraf çekmesine, video çekmesine, dijital filtreler uygulamasına ve bunları Instagram'ın kendisi de dahil olmak üzere çeşitli sosyal ağ hizmetlerinde paylaşmasına olanak tanıyan bir fotoğraf ve video paylaşım uygulamasıdır.
 * NodeJS Tabanlı Instagram Tool-TR (Bu komut dosyası veya kod, ccocot - Aldi Nugraha tarafından oluşturulmuştur).
 
-[!yapım(https://img.shields.io/badge/Codename_-_toolsig_v4.0-brightgreen.svg)]()
+
 [![Lisans](http://img.shields.io/:license-MIT-brightgreen.svg?style=flat)](LICENSE)
 
 ## İçindekiler
