@@ -1,94 +1,267 @@
-const { chalk, inquirer, print } = require("./tools/index.js");
-var moment = require("moment");
-var colors = require("colors");
-var userHome = require("user-home");
+const { IgApiClient } = require("instagram-private-api");
+const rp = require("request-promise");
+const chalk = require("chalk");
+const inquirer = require("inquirer");
+const _ = require("lodash");
+const fs = require("fs");
 
-// IP ALGILAMA *BAŞLADI!
-var os = require("os");
-var interfaces = os.networkInterfaces();
-var addresses = [];
-for (var k in interfaces) {
-    for (var k2 in interfaces[k]) {
-        var address = interfaces[k][k2];
-        if (address.family === "IPv4" && !address.internal) {
-            addresses.push(address.address);
+const ig = new IgApiClient();
+
+class instagram {
+    constructor(username, password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    async login() {
+        ig.state.generateDevice(this.username);
+        try {
+            const login = await ig.account.login(this.username, this.password);
+            return Promise.resolve(login);
+        } catch (err) {
+            if (err.message.match(/challenge_required/i)) {
+                console.log(chalk`{yellow [!] Challenge required!}`);
+                try {
+                    await ig.challenge.auto(true);
+                    const { code } = await inquirer.prompt({
+                        type: "input",
+                        name: "code",
+                        message: "⌭ Doğrulama kodunu girin (e-posta veya sms ile kontrol edin):",
+                        validate: (val) => /[0-9]/.test(val) || "Yalnızca Sayı Girin!",
+                    });
+                    const verify = await ig.challenge.sendSecurityCode(code);
+                    return Promise.resolve(verify.logged_in_user);
+                } catch (chErr) {
+                    return Promise.reject(chErr.message);
+                }
+            } else return Promise.reject(err.message);
+        }
+    }
+
+    async getIdByUsername(username) {
+        try {
+            const id = await ig.user.getIdByUsername(username);
+            return Promise.resolve(id);
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
+
+    async userInfo(uid) {
+        try {
+            const info = await ig.user.info(uid);
+            return Promise.resolve(info);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async mediaInfo(mid) {
+        try {
+            const info = await ig.media.info(mid);
+            return Promise.resolve(info);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async friendshipStatus(uid) {
+        try {
+            const status = ig.friendship.show(uid);
+            return Promise.resolve(status);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async userFeed(uid) {
+        try {
+            const feed = await ig.feed.user(uid);
+            return Promise.resolve(feed);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async timelineFeed() {
+        try {
+            const feed = await ig.feed.timeline();
+            return Promise.resolve(feed);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async userReels(uid) {
+        try {
+            const reels = await ig.feed.reelsMedia({ userIds: [uid] });
+            return Promise.resolve(reels);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async timelineReels() {
+        try {
+            const reels = await ig.feed.reelsTray();
+            return Promise.resolve(reels);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async locationFeed(lid) {
+        try {
+            const feed = await ig.feed.location(lid);
+            return Promise.resolve(feed);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async tagFeed(hashtag) {
+        try {
+            const feed = await ig.feed.tag(hashtag);
+            return Promise.resolve(feed);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async followersFeed(uid) {
+        try {
+            const followers = await ig.feed.accountFollowers(uid);
+            return Promise.resolve(followers);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async followingFeed(uid) {
+        try {
+            const following = await ig.feed.accountFollowing(uid);
+            return Promise.resolve(following);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async getMediaIdByUrl(url) {
+        try {
+            const get = await rp({
+                url: `http://api.instagram.com/oembed?url=${url}`,
+                method: "GET",
+                json: true,
+            });
+            const id = get.media_id.split("_")[0] || "";
+            return Promise.resolve(id);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async getMediaLikers(mid) {
+        try {
+            const get = await ig.media.likers(mid);
+            return Promise.resolve(get);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async follow(uid) {
+        try {
+            await ig.friendship.create(uid);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async unfollow(uid) {
+        try {
+            await ig.friendship.destroy(uid);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async like(mid) {
+        try {
+            await ig.media.like({
+                mediaId: mid,
+                moduleInfo: { module_name: "profile" },
+            });
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async unlike(mid) {
+        try {
+            await ig.media.unlike({
+                mediaId: mid,
+                moduleInfo: { module_name: "profile" },
+            });
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async comment(mid, msg) {
+        try {
+            await ig.media.comment({ mediaId: mid, text: msg });
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async deleteMedia(mid, type) {
+        try {
+            const del = await ig.media.delete({
+                mediaId: mid,
+                mediaType: type.toUpperCase(),
+            });
+            const isOk = del.did_delete ? true : false;
+            return Promise.resolve(isOk);
+        } catch (err) {
+            return Promise.reject(err.message);
+        }
+    }
+
+    async markStorySeen(item) {
+        try {
+            await ig.story.seen([item]);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async sendDirectMessage(tid, msg) {
+        try {
+            const thread = ig.entity.directThread([tid.toString()]);
+            await thread.broadcastText(msg);
+            return true;
+        } catch (err) {
+            return false;
         }
     }
 }
-// IP ALGILAMA *SON!
 
-const questionTools = [
-    "➥ Bilgi",
-    "➥ Bot Like Timeline",
-    "➥ Bot Like Target User",
-    "➥ Gönderiyi/Fotoğrafı Toplu Sil",
-
-    "➥ F-L -> Takipçi Hedefi",
-    "➥ L-C -> Takipçi Hedefi",
-
-    "➥ F-L-C -> Takipçi Hedefi",
-    "➥ F-L-C -> Takipçi Hedefi[BETA]",
-
-    "➥ F-L-C -> Takipçi Hedefi v2",
-
-    "➥ F-L-DM -> Takipçi Hedefi(DM)",
-    "➥ F-L-DM -> Takipçi Hedefi(DM) [BETA]",
-
-    "➥ F-L-C -> Hashtag Hedefi",
-    "➥ F-L-C -> Konum Hedefi",
-
-    "➥ Tüm Takipçilerden Takibi Bırak",
-    "➥ Geri Takip Yapmayanların Takibinden Çık",
-    "\n",
-];
-
-const menuQuestion = {
-    type: "liste",
-    name: "seçin",
-    message: "Araçları Seçin:\n  Aracı Kullanmadan önce (❆ Bilgi)  Kısmını Okuyun\n\n",
-    choices: questionTools,
+const print = (msg, type, line) => {
+    !type && console.log(msg);
+    type == "ok" && console.log(chalk`{green ${line ? "\n" : ""}⊙ ${msg}}`);
+    type == "wait" && console.log(chalk`{bold.cyan ${line ? "\n" : ""}∞ ${msg}}`);
+    type == "warn" && console.log(chalk`{yellow ${line ? "\n" : ""}≉ ${msg}}`);
+    type == "err" && console.log(chalk`{red ${line ? "\n" : ""}⋈ ${msg}}`);
 };
 
-const main = async () => {
-    try {
-        const { choice } = await inquirer.prompt(menuQuestion);
-        choice == questionTools[0] && require("./tools/info.js");
-        choice == questionTools[1] && require("./tools/liketimeline.js");
-        choice == questionTools[2] && require("./tools/liketarget.js");
-        choice == questionTools[3] && require("./tools/delallmedia.js");
-        choice == questionTools[4] && require("./tools/flonly.js");
-        choice == questionTools[5] && require("./tools/lconly.js");
-        choice == questionTools[6] && require("./tools/fftauto.js");
-        choice == questionTools[7] && require("./tools/fftbetaauto.js");
-        choice == questionTools[8] && require("./tools/fftautov2.js");
-        choice == questionTools[9] && require("./tools/fftdmauto.js");
-        choice == questionTools[10] && require("./tools/fftdmbetaauto.js");
-        choice == questionTools[11] && require("./tools/fhtauto.js");
-        choice == questionTools[12] && require("./tools/fltauto.js");
-        choice == questionTools[13] && require("./tools/unfollowall.js");
-        choice == questionTools[14] && require("./tools/unfollnotfollback.js");
-        choice == questionTools[15] && process.exit();
-    } catch (err) {
-        print(err, "err");
-    }
-};
+const delay = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+module.exports = { chalk, inquirer, _, fs, instagram, print, delay };
 
-console.log(chalk`{bold.green
-  ▄▄▄▄▄            ▄▄▌  .▄▄ · ▪   ▄▄ • 
-  •██  ▪     ▪     ██•  ▐█ ▀. ██ ▐█ ▀ ▪
-   ▐█.▪ ▄█▀▄  ▄█▀▄ ██▪  ▄▀▀▀█▄▐█·▄█ ▀█▄
-   ▐█▌·▐█▌.▐▌▐█▌.▐▌▐█▌▐▌▐█▄▪▐█▐█▌▐█▄▪▐█
-   ▀▀▀  ▀█▄▀▪ ▀█▄▀▪.▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀▀ 
-
-  Ξ BAŞLIK  : toolsig v4.0
-  Ξ GMAİL  : numansoylemez9@gmail.com
-  Ξ SON GÜNCELLEME : Çarşamba Günü, 4 Ağustos, 2021
-
-  116 111 111 108 115 105 103  118 51 
-  }`);
-console.log(chalk`{bold.red   •••••••••••••••••••••••••••••••••••••••••}`);
-console.log("  Ξ BAŞLADI  : ".bold.red + moment().format("D MMMM YYYY, h:mm:ss a"));
-console.log("  Ξ Dizin Yolu  : ".bold.red + userHome);
-console.log("  Ξ SİZİN IP  : ".bold.red + addresses);
-console.log(chalk`{bold.red   •••••••••••••••••••••••••••••••••••••••••}`);
-main();
+//by 1dcea8095a18ac73b764c19e40644b52 116 111 111 108 115 105 103  118 51
